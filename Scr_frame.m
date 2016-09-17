@@ -8,8 +8,9 @@ DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent ) = ...
 	
 	%% Location of agent
 for agent = 1 : AgentNumber
-	DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+3 ) = ...
+    [ x , y , rot ]= ...
 		fun_trackInterface( theClient , agent );% Location
+    DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+3 )  = [ x , y , rot ];
 end
 
 

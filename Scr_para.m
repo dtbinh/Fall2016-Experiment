@@ -4,10 +4,12 @@ AgentNumber = 4;
 btBuffer = 512;
 % Pause time during calibtration
 calPause = 0.25;
+% Number for calibration
+calibNum = 50;
 % Init values of sensor during calibration
 iniValue = 850;
 % Bluetooth devices
-SPort(1,:) = 'RNBT-6AD1';
+btPort(1,:) = 'RNBT-6AD1';
 btPort(2,:) = 'RNBT-6B35';
 btPort(3,:) = 'RNBT-8B44';
 btPort(4,:) = 'RNBT-6AB7';
@@ -52,3 +54,5 @@ dt = 0.05;
 gradCoe = 2;
 % Threshold for parameter estimation
 estThreshold = 0.05;
+% Number for Loop
+loop = 40;

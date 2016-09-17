@@ -14,6 +14,6 @@ q = [ 	data.RigidBodies(agent).qx, ...
         data.RigidBodies(agent).qz, ...
 		data.RigidBodies(agent).qw ];
 angles = quaternion( q );
-DataSet(counter,(agent-1)*6+5) = -angles(2) * 180.0 / pi;% Assume this is correct.
+rot = -angles(2) * 180.0 / pi;% Assume this is correct.
 
 end
