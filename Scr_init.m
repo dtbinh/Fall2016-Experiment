@@ -184,7 +184,7 @@ clear kheperaLocation
 % counter for loop 						counter(counter = 2)
 % First group of data
 counter = 1;
-DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent ) = ...
+DataSet( counter , 1 : dataLen*agent ) = ...
 	zeros( 1 ,  AgentNumber * dataLen );
 for agent = 1 : AgentNumber
 	% DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent )
@@ -197,12 +197,12 @@ for agent = 1 : AgentNumber
 		DataSet( counter , dataLen*(agent-1)+4 ) - sensorBG(agent) + iniBG;% No filter here
 	DataSet( counter , dataLen*(agent-1)+6 : dataLen*(agent-1)+7 ) = ...
 		DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+2 );% No Target
-	DataSet( counter , dataLen*(agent-1)+8 : dataLen*(agent-1)+10 ) = ...
-		[ 0 , 0 , 0 ];% l/r speed, flag
+	DataSet( counter , dataLen*(agent-1)+8 : dataLen*(agent-1)+12 ) = ...
+		[ 0 , 0 , 0 , 0 , 0 ];% l/r speed, flag
 end
 % Sencond group of data
 counter = 2;
-DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent ) = ...
+DataSet( counter , 1 : dataLen*agent ) = ...
 	zeros( 1 ,  AgentNumber * dataLen );
 for agent = 1 : AgentNumber
 	% DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent )
@@ -215,9 +215,10 @@ for agent = 1 : AgentNumber
 		DataSet( counter , dataLen*(agent-1)+4 ) - sensorBG(agent) + iniBG;% No filter here
 	DataSet( counter , dataLen*(agent-1)+6 : dataLen*(agent-1)+7 ) = ...
 		DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+2 );% No Target
-	DataSet( counter , dataLen*(agent-1)+8 : dataLen*(agent-1)+10 ) = ...
-		[ 0 , 0 , 0 ];% l/r speed, flag
+	DataSet( counter , dataLen*(agent-1)+8 : dataLen*(agent-1)+12 ) = ...
+		[ 0 , 0 , 0 , 0 , 0 ];% l/r speed, flag
 end
+clear x y rot
 
 
 

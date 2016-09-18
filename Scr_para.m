@@ -29,9 +29,10 @@ movPause = 0.1;
 % location of agent: 						x , y , rot
 % reading of sensor and filtered reading: 	value , fValue
 % target position of agent: 				xTar , yTar
+% velocity and turing angle for agent: 		velocity , angle
 % wheel speed: 								lspeed , rspeed
 % flag for single agent: 					flg
-dataLen = 10;%[x,y,rot,value,fValue,xTar,yTar,lspeed,rspeed,flg]
+dataLen = 12;%[x,y,rot,value,fValue,xTar,yTar,velocity,angle,lspeed,rspeed,flg]
 % Factor for filter to deal with the raw data from sensor
 ffactor = [ 0.1 , 0.3 , 0.6 ];
 % Initial Background data for filtered reading
@@ -56,3 +57,8 @@ gradCoe = 2;
 estThreshold = 0.05;
 % Number for Loop
 loop = 40;
+% Lenght for agent
+agentLen = 0.15;
+% Multiplier for velicity and angle
+vmulti = 10;% velocity
+wmulti = 10;% angle

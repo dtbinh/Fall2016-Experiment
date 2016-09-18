@@ -1,7 +1,7 @@
 % Frame
 
 %% Init Data Frame
-DataSet( counter , dataLen*(agent-1)+1 : dataLen*agent ) = ...
+DataSet( counter , 1 : dataLen*agent ) = ...
 	zeros( 1 ,  AgentNumber * dataLen );
 
 
@@ -12,6 +12,7 @@ for agent = 1 : AgentNumber
 		fun_trackInterface( theClient , agent );% Location
     DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+3 )  = [ x , y , rot ];
 end
+clear x y rot
 
 
 
@@ -33,7 +34,7 @@ for agent = 1 : AgentNumber
 	% prepare to show
 	values( agent ) = DataSet( counter , dataLen*(agent-1)+5 );
 end
-
+¡¶---code is wrong
 
 
 %% Show Values
@@ -113,12 +114,60 @@ clear est
 
 
 
-%% Generate and Send Instruction to Khepera
-%....
+%% Prepare Instruction for Agent
+for agent = 1 : AgentNumber
+	% Calculate the velocity and turning angle for agent
+	alpha1 = iniOri( agent , 2 );% Initial Orientation in Tracking System
+	alpha2 = iniOri( agent , 1 );% Initial Orientation in x-y Coordinate
+	beta1 = DataSet( counter , dataLen*(agent-1)+3 );% Orientation in Tracking Sys
+	dx = DataSet( counter , dataLen*(agent-1)+6 ) - 
+			DataSet( counter , dataLen*(agent-1)+1 );
+	dy = DataSet( counter , dataLen*(agent-1)+7 ) - 
+			DataSet( counter , dataLen*(agent-1)+2 );
+	beta2 = atan2( dx , dy );
+	% calculate velocity
+	velocity = sqrt( dx^2 + dy^2 );
+	DataSet( counter , dataLen*(agent-1)+8 ) = velocity;
+	% calculate angle
+	angle = beta2 - ( alpha2 + ( beta1 - alpha1 ) );
+	DataSet( counter , dataLen*(agent-1)+9 ) = angle;
+	% Translate to wheel speed for agent
+	lspeed = vmulti * velocity + angle * wmulti * ( agentLen / 2 );
+	DataSet( counter , dataLen*(agent-1)+10 ) = lspeed;
+	rspeed = vmulti * velocity - angle * wmulti * ( agentLen / 2 );
+	DataSet( counter , dataLen*(agent-1)+11 ) = rspeed;
+	
+end
+clear alpha1 alpha2 beta1 beta2 velocity angle lspeed rspeed
+
+
+
+%% Send Instruction to Khepera
+inst2Khepera = fun_int2instruction( 0 , 0 );
+for agent = 1 : AgentNumber
+	lspeed = DataSet( counter , dataLen*(agent-1)+10 );
+	rspeed = DataSet( counter , dataLen*(agent-1)+11 );
+	inst2Khepera = fun_int2instruction( lspeed , rspeed );
+	kheperaOutput( agent ).writeBytes( inst2Khepera );
+end
+clear lspeed rspeed
 
 
 
 %% Draw Figure
+scatter( 0 , 0 );
+hold on;
+grid on;
+axis([-2,2,-2,2])
+for agent = 1 : AgentNumber
+	x = DataSet( : , dataLen*(agent-1)+1 );
+	y = DataSet( : , dataLen*(agent-1)+2 );
+	scatter( x , y , '.' );
+	x0 = DataSet( counter , dataLen*(agent-1)+1 );
+	y0 = DataSet( counter , dataLen*(agent-1)+2 );
+	scatter( x0 , y0 , 'O' );
+end
+hold off;
 
 
 
