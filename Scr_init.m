@@ -139,7 +139,7 @@ inst2Khepera = fun_int2instruction( 0 , 0 );
 for agent = 1 : AgentNumber
 	kheperaOutput( agent ).writeBytes( inst2Khepera );
 end
-pause(movPause);
+pause;
 % Get second group of location
 for agent = 1 : AgentNumber
 	[ x , y , rot ] = ...
@@ -153,8 +153,8 @@ for agent = 1 : AgentNumber
 		kheperaLocation( agent , : );
 	% Orientation in x-y coordinate
 	iniOri(agent,1) = atan2( ...
-		kheperaLocation(agent+2*AgentNumber,2) ,...
-		kheperaLocation(agent+2*AgentNumber,1) ) * 180/pi ;
+		kheperaLocation(agent+2*AgentNumber,1) ,...
+		kheperaLocation(agent+2*AgentNumber,2) ) * 180/pi ;
 	% Orientation measure by tracking system
 	iniOri(agent,2) = kheperaLocation(agent+AgentNumber,3); 
 	% iniOri from -180~180 degree...
@@ -252,8 +252,8 @@ Rk = mean( centerreading1 );
 px = DataSet( 2 , dataLen*(1-1)+5 ) - DataSet( 2 , dataLen*(3-1)+5 );%px = 1-3
 py = DataSet( 2 , dataLen*(2-1)+5 ) - DataSet( 2 , dataLen*(4-1)+5 );%py = 2-4
 clear centerreading1 centerreading2
-s.x = [ R ; px ; py ; iniEst ; Rk ; px ; py ]
-s.p = 0;
+s.x = [ R ; px ; py ; iniEst ; Rk ; px ; py ];
+s.P = 0;
 s.H=0.01*[1 1 1 1 1 1 1 1]';
 clear R Rk px py
 kalState(1).s = s;

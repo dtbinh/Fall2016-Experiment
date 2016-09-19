@@ -48,6 +48,9 @@ clear values
 % Input DataSet / s
 % Output filterOut / s
 % prepare data
+values = zeros( 2 , AgentNumber );
+r = zeros( 2 , AgentNumber );
+rk = zeros( 2 , AgentNumber );
 for agent = 1 : AgentNumber
 	% sensor reading for this frame
 	values( 1 , agent ) = DataSet( counter-0 , dataLen*(agent-1)+5 );
@@ -62,14 +65,15 @@ rc = mean( r' )';
 rck = mean( rk' )';
 % Estimate Laplacian ( Last Frame )
 l = ( 1 / ( (r(2,1)+r(1,2)-r(2,3)-r(1,4))/4 )^2 ) *...
-    ( ( sum( Values(2,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
+    ( ( sum( values(2,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
 % Call cooperative Kalman filter
+values2 = [ values( 1 , : )' ; values( 2 , : )' ];
 s = fun_kalmanf3...
-	( s , values , r(:,1) , r(:,2) , r(:,3) , r(:,4) , ...
+	( s , values2 , r(:,1) , r(:,2) , r(:,3) , r(:,4) , ...
 	rc , rk(:,1) , rk(:,2) , rk(:,3) , rk(:,4) , rck , l );
 % Estimate Laplacian Again ( This Frame )
 l = ( 1 / ( (r(2,1)+r(1,2)-r(2,3)-r(1,4))/4 )^2 ) *...
-    ( ( sum( Values(1,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
+    ( ( sum( values(1,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
 % Estimate Error in the Center of Agent Group
 error = s.x(1,1) - s.x(5,1);
 errort = error / dt;

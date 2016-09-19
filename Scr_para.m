@@ -19,7 +19,7 @@ agentAddr2 = '192.168.1.55';
 agentAddr3 = '192.168.1.60';
 agentAddr4 = '192.168.1.121';
 % Initial Movement when calculate the orientation
-iniMovement = 25;
+iniMovement = 50;
 % Initial Speed for Khepera Agent
 iniSpeed = 50;
 % Pause to let the robot move
