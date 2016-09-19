@@ -27,14 +27,13 @@ end
 %%  Simple Filter for Reading
 for agent = 1 : AgentNumber
 	DataSet( counter , dataLen*(agent-1)+5 ) = ...
-		ffactor(1) * DataSet( counter-2 , dataLen*(agent-1)+4 ) + ...
-		ffactor(2) * DataSet( counter-1 , dataLen*(agent-1)+4 ) + ...
-		ffactor(3) * DataSet( counter-0 , dataLen*(agent-1)+4 ) - ...
-		sensorBG(agent) + iniBG;
+		ffactor(1) * ( DataSet( counter-2 , dataLen*(agent-1)+4 ) - sensorBG(agent) + iniBG ) + ...
+		ffactor(2) * ( DataSet( counter-1 , dataLen*(agent-1)+4 ) - sensorBG(agent) + iniBG ) + ...
+		ffactor(3) * ( DataSet( counter-0 , dataLen*(agent-1)+4 ) - sensorBG(agent) + iniBG ) + ...
+		0;
 	% prepare to show
 	values( agent ) = DataSet( counter , dataLen*(agent-1)+5 );
 end
-¡¶---code is wrong
 
 
 %% Show Values
@@ -49,7 +48,7 @@ clear values
 % Output filterOut / s
 % prepare data
 values = zeros( 2 , AgentNumber );
-r = zeros( 2 , AgentNumber );
+rn = zeros( 2 , AgentNumber );
 rk = zeros( 2 , AgentNumber );
 for agent = 1 : AgentNumber
 	% sensor reading for this frame
@@ -57,28 +56,28 @@ for agent = 1 : AgentNumber
 	% sensor reading for last frame
 	values( 2 , agent ) = DataSet( counter-1 , dataLen*(agent-1)+5 );
 	% location of agent this frame
-	r( : , agent ) = DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+2 )';
+	rn( : , agent ) = DataSet( counter , dataLen*(agent-1)+1 : dataLen*(agent-1)+2 )';
 	% location of agent last frame
 	rk( : , agent ) = DataSet( counter-1 , dataLen*(agent-1)+1 : dataLen*(agent-1)+2 )';
 end
-rc = mean( r' )';
+rc = mean( rn' )';
 rck = mean( rk' )';
 % Estimate Laplacian ( Last Frame )
-l = ( 1 / ( (r(2,1)+r(1,2)-r(2,3)-r(1,4))/4 )^2 ) *...
+l = ( 1 / ( (rn(2,1)+rn(1,2)-rn(2,3)-rn(1,4))/4 )^2 ) *...
     ( ( sum( values(2,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
 % Call cooperative Kalman filter
 values2 = [ values( 1 , : )' ; values( 2 , : )' ];
 s = fun_kalmanf3...
-	( s , values2 , r(:,1) , r(:,2) , r(:,3) , r(:,4) , ...
+	( s , values2 , rn(:,1) , rn(:,2) , rn(:,3) , rn(:,4) , ...
 	rc , rk(:,1) , rk(:,2) , rk(:,3) , rk(:,4) , rck , l );
 % Estimate Laplacian Again ( This Frame )
-l = ( 1 / ( (r(2,1)+r(1,2)-r(2,3)-r(1,4))/4 )^2 ) *...
+l = ( 1 / ( (rn(2,1)+rn(1,2)-rn(2,3)-rn(1,4))/4 )^2 ) *...
     ( ( sum( values(1,:) ) ) - AgentNumber * s.x( 5 , 1 ) );
 % Estimate Error in the Center of Agent Group
 error = s.x(1,1) - s.x(5,1);
 errort = error / dt;
 % Center Gradient
-grad = [ s.x(2,1) , s.x(3,1) ] / norm([ s.x(2,1) , s.x(3,1) ]);
+grad = [ s.x(2,1) ; s.x(3,1) ] / norm([ s.x(2,1) , s.x(3,1) ]);
 % Next Center
 rc = rc + gradCoe * dt*grad;
 % Collect Data to DataSet
@@ -89,15 +88,15 @@ filterOut( counter , 3 ) = grad(1);
 filterOut( counter , 4 ) = grad(2);
 filterOut( counter , 5 ) = error;
 filterOut( counter , 7 ) = l;
-clear rc rck r rk  values grad error l
+clear rc rck rn rk  values grad error l
 	
 
 	
 %% Formation Control for Khepera Robot
 % Input filterOut
 % Output DataSet
-[r1,r2,r3,r4] = fun_jacobi( iniDist(1,:)' , iniDist(2,:)' , ...
-	iniDist(3,:)' , iniDist(4,:)' , filterOut( counter , 1:2 )' );
+[r1,r2,r3,r4] = fun_jacobi( initDist(1,:)' , initDist(2,:)' , ...
+	initDist(3,:)' , initDist(4,:)' , filterOut( counter , 1:2 )' );
 DataSet( counter , dataLen*(1-1)+6:dataLen*(1-1)+7 ) = r1';
 DataSet( counter , dataLen*(2-1)+6:dataLen*(2-1)+7 ) = r2';
 DataSet( counter , dataLen*(3-1)+6:dataLen*(3-1)+7 ) = r3';
@@ -124,9 +123,9 @@ for agent = 1 : AgentNumber
 	alpha1 = iniOri( agent , 2 );% Initial Orientation in Tracking System
 	alpha2 = iniOri( agent , 1 );% Initial Orientation in x-y Coordinate
 	beta1 = DataSet( counter , dataLen*(agent-1)+3 );% Orientation in Tracking Sys
-	dx = DataSet( counter , dataLen*(agent-1)+6 ) - 
+	dx = DataSet( counter , dataLen*(agent-1)+6 ) - ...
 			DataSet( counter , dataLen*(agent-1)+1 );
-	dy = DataSet( counter , dataLen*(agent-1)+7 ) - 
+	dy = DataSet( counter , dataLen*(agent-1)+7 ) - ...
 			DataSet( counter , dataLen*(agent-1)+2 );
 	beta2 = atan2( dx , dy );
 	% calculate velocity

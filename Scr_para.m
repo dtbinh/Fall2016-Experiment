@@ -60,5 +60,5 @@ loop = 40;
 % Lenght for agent
 agentLen = 0.15;
 % Multiplier for velicity and angle
-vmulti = 10;% velocity
-wmulti = 10;% angle
+vmulti = 0.2 * 80;% velocity
+wmulti = 0.2 * 1;% angle
