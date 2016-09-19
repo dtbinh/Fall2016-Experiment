@@ -14,4 +14,4 @@ while(1)
 end
 
 %% Clean Up
-Scr_Clean;
+Scr_clean;
