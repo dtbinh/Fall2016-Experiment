@@ -91,6 +91,11 @@ filterOut( counter , 7 ) = l;
 clear rc rck rn rk  values grad error l
 	
 
+%% Test
+filterOut( counter , 1 ) = 0;
+filterOut( counter , 2 ) = 0;
+	
+	
 	
 %% Formation Control for Khepera Robot
 % Input filterOut

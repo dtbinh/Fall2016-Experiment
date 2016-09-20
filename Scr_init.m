@@ -178,6 +178,13 @@ clear kheperaLocation
 
 
 
+%% Wait for Diffusion
+display('Pause for diffusion...');
+pause;
+display('Pause twice...');
+pause;
+
+
 %% Collect Necessary Data for Algorithm / Init DataSet
 % Output:
 % Location and sensor values for agent 	DataSet( counter , dataLen )
